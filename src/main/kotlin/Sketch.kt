@@ -22,16 +22,6 @@ fun main() = application {
         drwr = drawer
         drawer.strokeWeight = 0.0
 
-        val mat1 = Matrix(3,2)
-        mat1.randomize()
-        val mat2 = mat1.transpose()
-        mat1.print()
-        mat2.print()
-        var mat3 = mat2 dot mat1
-        mat3.print()
-        mat3 += 1
-        mat3.print()
-
         extend {
             if(frameCount % 100 == 0) {
                 pipes.add(Pipe())

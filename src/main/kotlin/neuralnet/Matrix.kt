@@ -28,6 +28,13 @@ class Matrix(val rows: Int, val cols: Int) {
         }}
     }
 
+    fun map(action: (el: Int) -> Int): Matrix {
+        loopThrough {r,c ->
+            data[r][c] = action(data[r][c])
+        }
+        return this
+    }
+
     infix fun dot(m: Matrix): Matrix {
         if(cols != m.rows) return Matrix(0,0)
         val result = Matrix(rows, m.cols)
@@ -59,16 +66,12 @@ class Matrix(val rows: Int, val cols: Int) {
 
 //scalar func
 infix fun Matrix.add(n: Int): Matrix {
-    loopThrough { row, col ->
-        data[row][col] += n
-    }
+    map { it + n }
     return this
 }
 
 infix fun Matrix.multiply(n: Int): Matrix {
-    loopThrough { row, col ->
-        data[row][col] *= n
-    }
+    map { it * n }
     return this
 }
 
