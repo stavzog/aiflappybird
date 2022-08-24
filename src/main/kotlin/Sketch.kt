@@ -1,3 +1,4 @@
+import neuralnet.Matrix
 import org.openrndr.KEY_SPACEBAR
 import org.openrndr.application
 import org.openrndr.color.ColorRGBa
@@ -9,8 +10,6 @@ var drwr: Drawer? = null
 
 val bird = Bird()
 val pipes = mutableListOf<Pipe>()
-var over = false
-var score = 0
 
 fun main() = application {
     configure {
@@ -20,25 +19,32 @@ fun main() = application {
         windowResizable = false
     }
     program {
-
         drwr = drawer
         drawer.strokeWeight = 0.0
+
+        val mat1 = Matrix(3,2)
+        mat1.randomize()
+        val mat2 = mat1.transpose()
+        mat1.print()
+        mat2.print()
+        var mat3 = mat2 dot mat1
+        mat3.print()
+        mat3 += 1
+        mat3.print()
 
         extend {
             if(frameCount % 100 == 0) {
                 pipes.add(Pipe())
             }
-            withDrawer {
+            with(drawer) {
                 clear(ColorRGBa.BLACK)
-                if(!over) {
-                    bird.update()
-                    pipes.forEach {
-                        it.update()
-                        if (it.hits(bird)) {
-                            it.highlight = true
-                        }
-                        if (it.offscreen()) pipes.remove(it)
+                bird.update()
+                pipes.forEach {
+                    it.update()
+                    if (it.hits(bird)) {
+                        it.highlight = true
                     }
+                    if (it.offscreen()) pipes.remove(it)
                 }
             }
         }
