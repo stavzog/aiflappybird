@@ -26,7 +26,7 @@ fun main() = application {
             if(frameCount % 100 == 0) {
                 pipes.add(Pipe())
             }
-            with(drawer) {
+            withDrawer {
                 clear(ColorRGBa.BLACK)
                 bird.update()
                 pipes.forEach {
