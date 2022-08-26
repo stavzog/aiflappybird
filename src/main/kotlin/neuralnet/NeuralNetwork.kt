@@ -4,16 +4,16 @@ import kotlin.math.exp
 
 class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private val outputN: Int) {
 
-    private var weightsIH = Matrix(hiddenN, inputN)
-    private var weightsHO = Matrix(outputN, hiddenN)
-    private var biasH = Matrix(hiddenN, 1)
-    private var biasO = Matrix(outputN, 1)
+    private var weightsIH = Matrix(hiddenN, inputN).randomize()
+    private var weightsHO = Matrix(outputN, hiddenN).randomize()
+    private var biasH = Matrix(hiddenN, 1).randomize()
+    private var biasO = Matrix(outputN, 1).randomize()
 
-    init {
-        weightsHO.randomize()
-        weightsIH.randomize()
-        biasH.randomize()
-        biasO.randomize()
+    constructor(nn: NeuralNetwork): this(nn.inputN, nn.hiddenN, nn.outputN) {
+        weightsIH = nn.weightsIH.copy()
+        weightsHO = nn.weightsHO.copy()
+        biasH = nn.biasH.copy()
+        biasO = nn.biasO.copy()
     }
 
     fun feedforward(inputArr: FloatArray): FloatArray {
@@ -23,12 +23,12 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
         hidden += biasH
 
         //activation func
-        hidden = hidden.map { sigmoid(it) }
+        hidden.map { sigmoid(it) }
 
         //ouput layer output
         var output = weightsHO dot hidden
         output += biasO
-        output = output.map { sigmoid(it) }
+        output.map { sigmoid(it) }
 
         return output.flatten()
     }
@@ -43,19 +43,19 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
         hidden += biasH
 
         //activation func
-        hidden = hidden.map { sigmoid(it) }
+        hidden.map { sigmoid(it) }
 
         //ouput layer output
         var outputs = weightsHO dot hidden
         outputs += biasO
-        outputs = outputs.map { sigmoid(it) }
+        outputs.map { sigmoid(it) }
 
         //Calculate output layer error
         val targets = Matrix(targs)
         val errorsO = targets - outputs
 
         //Calculate output layer gradient
-        var gradients = outputs.map { dsigmoid(it) }
+        var gradients = Matrix.change(outputs) { dsigmoid(it) }
         gradients *= errorsO
         gradients *= lr
 
@@ -70,9 +70,8 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
         val errorsH = weightsHO.transposed dot errorsO
 
         //Calculate hidden layer gradient
-        var hiddenGradient = hidden.map { dsigmoid(it) }
-        hiddenGradient *= errorsH
-        hiddenGradient *= lr
+        var hiddenGradient = Matrix.change(hidden) { dsigmoid(it) }
+        hiddenGradient *= errorsH * lr
 
         //Calculate hidden layer deltas
         val deltaWeightsIH = hiddenGradient dot inputs.transposed
@@ -80,6 +79,15 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
         //adjust weights & bias
         weightsIH += deltaWeightsIH
         biasH += hiddenGradient
+    }
+
+    fun copy() = NeuralNetwork(this)
+
+    fun mutate(transform: (Float) -> Float) {
+        weightsHO.map(transform)
+        weightsIH.map(transform)
+        biasH.map(transform)
+        biasO.map(transform)
     }
 }
 

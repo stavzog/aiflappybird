@@ -23,8 +23,3 @@ fun main() {
     println(nn.feedforward(floatArrayOf(0f,1f)).contentToString())
 
 }
-
-// true true -> false
-// true false -> true
-// false false -> false
-// false true -> true
