@@ -16,24 +16,24 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
         biasO = nn.biasO.copy()
     }
 
-    fun feedforward(inputArr: FloatArray): FloatArray {
+    fun feedforward(inputArr: DoubleArray): DoubleArray {
         val input = Matrix(inputArr)
         //hidden layer output
         var hidden = weightsIH dot input
         hidden += biasH
 
         //activation func
-        hidden.map { sigmoid(it) }
+        hidden.map { sigmoid(it.toFloat()) }
 
         //ouput layer output
         var output = weightsHO dot hidden
         output += biasO
-        output.map { sigmoid(it) }
+        output.map { sigmoid(it.toFloat()) }
 
         return output.flatten()
     }
 
-    fun backprop(inp: FloatArray, targs: FloatArray) {
+    fun backprop(inp: DoubleArray, targs: DoubleArray) {
 
         val lr = 0.1f
 
@@ -83,7 +83,7 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
 
     fun copy() = NeuralNetwork(this)
 
-    fun mutate(transform: (Float) -> Float) {
+    fun mutate(transform: (Number) -> Number) {
         weightsHO.map(transform)
         weightsIH.map(transform)
         biasH.map(transform)
@@ -91,5 +91,5 @@ class NeuralNetwork(private val inputN: Int, private val hiddenN: Int, private v
     }
 }
 
-fun sigmoid(x: Float) = 1 / (1 + exp(-x))
-fun dsigmoid(y: Float) = y * (1-y)
+fun sigmoid(x: Number) = 1 / (1 + exp(-x.toDouble()))
+fun dsigmoid(y: Number) = y.toDouble() * (1-y.toDouble())

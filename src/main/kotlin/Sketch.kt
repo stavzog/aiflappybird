@@ -29,6 +29,7 @@ fun main() = application {
             withDrawer {
                 clear(ColorRGBa.BLACK)
                 bird.update()
+                bird.think(pipes)
                 pipes.forEach {
                     it.update()
                     if (it.hits(bird)) {
@@ -37,10 +38,6 @@ fun main() = application {
                     if (it.offscreen()) pipes.remove(it)
                 }
             }
-        }
-
-        keyboard.keyDown.listen {
-            if(it.key == KEY_SPACEBAR) bird.up()
         }
     }
 }

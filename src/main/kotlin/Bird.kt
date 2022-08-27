@@ -1,6 +1,10 @@
+import neuralnet.NeuralNetwork
 import org.openrndr.color.ColorRGBa
 
 class Bird {
+
+    val brain = NeuralNetwork(4,4,1)
+
     var y = height / 2.0
     var x = 64.0
 
@@ -34,4 +38,16 @@ class Bird {
     fun up() {
         velocity += lift
     }
+}
+
+fun Bird.think(pipes: MutableList<Pipe>) {
+    val inputs = doubleArrayOf(
+        y / height,
+        pipes[0].top / height,
+        pipes[0].bottom / height,
+        pipes[0].x / width
+    )
+
+    val output = brain.feedforward(inputs)
+    if (output[0] > 0.5) up()
 }
