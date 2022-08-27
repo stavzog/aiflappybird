@@ -40,12 +40,15 @@ class Bird {
     }
 }
 
-fun Bird.think(pipes: MutableList<Pipe>) {
+fun Bird.think() {
+
+    val closest = closestPipe(this)
+
     val inputs = doubleArrayOf(
         y / height,
-        pipes[0].top / height,
-        pipes[0].bottom / height,
-        pipes[0].x / width
+        closest.top / height,
+        closest.bottom / height,
+        closest.x / width
     )
 
     val output = brain.feedforward(inputs)

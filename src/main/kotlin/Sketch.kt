@@ -29,7 +29,7 @@ fun main() = application {
             withDrawer {
                 clear(ColorRGBa.BLACK)
                 bird.update()
-                bird.think(pipes)
+                bird.think()
                 pipes.forEach {
                     it.update()
                     if (it.hits(bird)) {
@@ -43,7 +43,3 @@ fun main() = application {
 }
 
 fun withDrawer(task: Drawer.() -> Unit) = drwr?.runCatching(task)
-
-fun Pipe.offscreen(): Boolean {
-    return x < -20
-}
